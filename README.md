@@ -7,12 +7,12 @@
 Must have `python3` and `pip` installed on development machine
 
 ## Module Installations (if needed)
-1. ` pip install click `
-2. ` pip install requests `
-3. ` pip install pyfiglet `
+1. `pip install click`
+2. `pip install requests`
+3. `pip install pyfiglet`
 
 ## Command to search Book Titles
-`**python3** books.py search "<Search Term>"`
+`python3 books.py search "<Search Term>"`
 
 ## Command to add Books to your Reading List
 `python3 books.py add "<Book ID>"`
