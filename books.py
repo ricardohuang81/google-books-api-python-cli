@@ -8,18 +8,14 @@ fig = Figlet(font = 'small') # adjusts Fitlet letters to a smaller size
 
 @click.group() # creates a new Group with a function as callback
 def main():
-    """
-    Simple CLI for querying books using Google Books API
-    """
+    "Simple CLI for querying and adding books to Reading List using the Google Books API"
     pass
 
 @main.command()
-@click.argument('query', default='', metavar='<Max Results>') # provide default value and metavar
-@click.argument('max', default=5, metavar='<Book Title>') # provide default value and metavar
+@click.argument('max', default = 5) # provide default value
+@click.argument('query', default = '') # provide default value
 def search(query, max):
-    """
-    Returns a list of books available based on <Book Title> entered with <Max Results> defaulted to 5
-    """
+    "Returns 5 (maximum) search results"
     print(fig.renderText("Searching..."))
     if not query:
         click.echo("Some popular search terms include 'Harry Potter','Twilight','Python', 'Game of Thrones', 'JavaScript'")
@@ -44,9 +40,7 @@ def search(query, max):
 @main.command()
 @click.argument('id', default='', metavar='<Book ID>')
 def add(id):
-    """
-    This command adds a Book into your Reading List by inserting the Book ID
-    """
+    "Adds a Book into your Reading List by inputing <Book ID>"
     url = 'https://www.googleapis.com/books/v1/volumes/{}'
     if not id:
         id = click.prompt("Enter a Book ID to add it in to your Reading List: ")
@@ -77,9 +71,9 @@ def add(id):
         click.echo("Invalid, please enter valid Book ID.")
 
 @main.command()
-@click.argument('sortby', default='', metavar='<Sort By>')
-def mybooks(sortby):
-    """This command shows your Reading List"""
+@click.argument('sortby', default='')
+def readinglist(sortby):
+    "Lists all Book Titles in Reading List"
     if os.path.exists('readinglist.json'):
         jsonFile = open('readinglist.json', 'r') # Opens and Reads the JSON File
         data = json.load(jsonFile) # Loads JSON File
