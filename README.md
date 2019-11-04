@@ -1,9 +1,13 @@
-## Google Bookshelf CLI using python
+## Google Books Command Line Interface (CLI) using Python
 The Bookshelf collection allows you to view bookshelf metadata as well as to modify the contents of a bookshelf.
 
-## Development dependecy
-You should have python 3 and pip installed in the development machine
-run `setup.bat` to install all the dependecys.
+## Requirements
+You must have python3 and pip installed on your machine
+
+## Installations
+1. ``` pip install click ```
+2. ``` pip install requests ```
+3. ``` pip install pyfiglet ```
 
 ## Help for every command
 `python books.py --help`
@@ -40,4 +44,4 @@ run `setup.bat` to install all the dependecys.
 `python books.py mybooks pageCount`
 
 ## Clearing all books from Shelf
-`python books.py clearbooks`
+`python books.py clearbooks`# google-books-api-python-cli
