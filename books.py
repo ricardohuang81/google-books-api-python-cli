@@ -1,109 +1,97 @@
-import click
-import requests
-import json
-import os
-from operator import itemgetter
-from pyfiglet import Figlet
-f = Figlet(font='big')
+import os # portable way of using operating system dependent functionality
+import json # data interchange format
+import click  # package for CLIs - porvides arbitrary nesting of commands and automatic generation of Help Pages
+import requests  # allows you to send HTTP/1.1 requests, can add headers, form data, multipart files, and parameters with simple Python dictionaries, and access response data in the same way
+from pyfiglet import Figlet # full port of FIGlet into pure python - makes large letters out of ordinary text
+fig = Figlet(font = 'small') # adjusts Fitlet letters to a smaller size
 
-@click.group()
+
+@click.group() # creates a new Group with a function as callback
 def main():
     """
-    Simple CLI for querying books on Google Books
+    Simple CLI for querying books using Google Books API
     """
     pass
 
 @main.command()
-@click.argument('query',default='',metavar='<Max Results>')
-@click.argument('max', default=20,metavar='<Book Name>')
-def search(query,max):
-    """Return list of Book Available based on <Book Name> entered with <Max Results> defaulted to 20
+@click.argument('query', default='', metavar='<Max Results>') # provide default value and metavar
+@click.argument('max', default=5, metavar='<Book Title>') # provide default value and metavar
+def search(query, max):
     """
-    print(f.renderText("CLI Search"))
+    Returns a list of books available based on <Book Title> entered with <Max Results> defaulted to 5
+    """
+    print(fig.renderText("Searching..."))
     if not query:
-        click.echo("Popular search strings 'HTML','PHP','Python', ‘Java’")
-        query = click.prompt('Please enter a Book Name to Search')       
+        click.echo("Some popular search terms include 'Harry Potter','Twilight','Python', 'Game of Thrones', 'JavaScript'")
+        query = click.prompt("Enter a Book Title to search: ")
     else:
-        click.echo("List of books available for given Search: "+query)
-    
-        
-    url_format = 'https://www.googleapis.com/books/v1/volumes'
+        click.echo('List of books available for given Search: "{}"'.format(query))
+
+    url = 'https://www.googleapis.com/books/v1/volumes'
+
     query = "+".join(query.split())
 
     query_params = {
         'q': query,
-        'maxResults':max
+        'maxResults': max
     }
-    response = requests.get(url_format, params=query_params)
-    for response in response.json()['items']:        # traversal of List Books
-        click.echo("Book Name: "+ response['volumeInfo']['title']+" Id: "+response['id'])
-    
+
+    response = requests.get(url, params = query_params)
+
+    for response in response.json()['items']: # loop through Books List
+        click.echo("Book ID: " + response['id'] + " | Book Title: " + response['volumeInfo']['title']+" | Book Author: "+ response['volumeInfo']['authors'][0] + " | Book Publishing Company: " + response['volumeInfo']['publisher'])
+
 @main.command()
-@click.argument('id',default='',metavar='<Book ID>')
+@click.argument('id', default='', metavar='<Book ID>')
 def add(id):
-    """This add the Book in to your shelf"""
-    url_format = 'https://www.googleapis.com/books/v1/volumes/{}'
+    """
+    This command adds a Book into your Reading List by inserting the Book ID
+    """
+    url = 'https://www.googleapis.com/books/v1/volumes/{}'
     if not id:
-        id = click.prompt('Please enter a Book Id to add it in to your shelf')       
-    bookDetails = requests.get(url_format.format(id))
+        id = click.prompt("Enter a Book ID to add it in to your Reading List: ")
+    bookDetails = requests.get(url.format(id))
     if('error' not in bookDetails.json()):
-        if os.path.exists("bookshelf.json"):
-            jsonFile = open("bookshelf.json", "r") # Open the JSON file for reading
-            data = json.load(jsonFile) # Read the JSON into the buffer
+        if os.path.exists('readinglist.json'):
+            jsonFile = open('readinglist.json', 'r') # Opens and Reads the JSON File
+            data = json.load(jsonFile) # Loads JSON File
             jsonFile.close()
-            for response in data:        # traversal of local List Books
+            for response in data: # Loop through Reading List
                 available = False
                 if (response['id'] == id):
-                    available = True            
+                    available = True
             if(not available):
-                with open('bookshelf.json', 'w') as outfile:
+                with open('readinglist.json', 'w') as outfile: # Writes Book Information you added to JSON File (Reading List)
                     data.append(bookDetails.json())
                     json.dump(data, outfile)
-                    print(f.renderText("Added Sucessfully"))
+                    print(fig.renderText("Book Successfully Added to Reading List"))
             else:
-                click.echo("Already in your shelf..!")   
+                click.echo("This Book is already in your Reading List.")
         else:
-            with open('bookshelf.json', 'w') as outfile:
+            with open('readinglist.json', 'w') as outfile:
                 data = []
                 data.append(bookDetails.json())
                 json.dump(data, outfile)
-                print(f.renderText("Added Sucessfully"))                
+                print(fig.renderText("Book Successfully Added to Reading List"))
     else:
-        click.echo("Not Valid Book please enter valid ID..!") 
-        
+        click.echo("Invalid, please enter valid Book ID.")
+
 @main.command()
-@click.argument('id')
-def read(id):
-    """This return Description of the Book"""
-    url_format = 'https://www.googleapis.com/books/v1/volumes/{}'
-    response = requests.get(url_format.format(id))        
-    click.echo(response.json()['volumeInfo']['description'])
-    
-@main.command()
-def clearbooks():
-    """This will remove all books from shelf"""
-    os.remove("bookshelf.json")
-    print(f.renderText("Cleared"))
-    
-@main.command()
-@click.argument('sortby',default='',metavar='<Sort by>')
+@click.argument('sortby', default='', metavar='<Sort By>')
 def mybooks(sortby):
-    """This return a List of books in your shelf"""
-    if os.path.exists("bookshelf.json"):
-        jsonFile = open("bookshelf.json", "r") # Open the JSON file for reading
-        data = json.load(jsonFile) # Read the JSON into the buffer
+    """This command shows your Reading List"""
+    if os.path.exists('readinglist.json'):
+        jsonFile = open('readinglist.json', 'r') # Opens and Reads the JSON File
+        data = json.load(jsonFile) # Loads JSON File
         jsonFile.close()
         if not sortby:
             newlist = data
         else:
             newlist = sorted(data, key=lambda e: e.get('volumeInfo', {}).get(sortby))
-        #newlist = sorted(data, key=lambda x: ([x]['title']))
-        #print(newList)
-        for response in newlist:        # traversal of local List Books
-            #print(response['volumeInfo']['pageCount'])
-            click.echo("Book Name: "+ response['volumeInfo']['title'] + ", No Of Pages: " +str(response['volumeInfo']['pageCount']))
-    else:      
-        click.echo("No Books..!")
+        for response in newlist: # traversal of your Reading List
+            click.echo("Book Title: "+ response['volumeInfo']['title'])
+    else:
+        click.echo("There are no Books in your Reading List.")
 
 if __name__ == "__main__":
     main()
