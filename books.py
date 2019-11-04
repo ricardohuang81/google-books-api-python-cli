@@ -8,7 +8,7 @@ fig = Figlet(font = 'small') # adjusts Fitlet letters to a smaller size
 
 @click.group() # creates a new Group with a function as callback
 def main():
-    "Simple CLI for querying and adding books to Reading List using the Google Books API"
+    "Basic CLI for querying and adding books to Reading List using the Google Books API"
     pass
 
 @main.command()
