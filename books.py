@@ -12,8 +12,8 @@ def main():
     pass
 
 @main.command()
+@click.argument('query', default='')  # provide default value
 @click.argument('max', default = 5) # provide default value
-@click.argument('query', default = '') # provide default value
 def search(query, max):
     "Returns 5 (maximum) search results"
     print(fig.renderText("Searching..."))
