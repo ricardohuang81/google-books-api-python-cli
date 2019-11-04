@@ -4,7 +4,7 @@
 * Can view what Books are in your personal Reading List
 
 ## Requirements
-Must have `python3` and `pip` installed on development machine
+`python3` and `pip` installed on development machine
 
 ## Module Installations (if needed)
 1. `pip install click`
@@ -21,7 +21,7 @@ Must have `python3` and `pip` installed on development machine
 ## Command to view Reading List of Books
 `python3 books.py readinglist`
 
-## Help Commands for using this CLI
+## Help Commands for using CLI
 `python3 books.py --help`
 
 `python3 books.py search --help`
