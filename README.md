@@ -45,3 +45,4 @@ You must have python3 and pip installed on your machine
 
 ## Clearing all books from Shelf
 `python books.py clearbooks`# google-books-api-python-cli
+# google-books-api-python-cli
