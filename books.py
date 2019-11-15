@@ -22,10 +22,10 @@ def main():
 @click.argument('query', default = '')  # provide default value
 @click.argument('max', default = 5) # provide default value
 def search(query, max):
+    """Returns 5 (maximum) search results"""
     queryKey = 'q' # variable for 'q'
     ID = 'id'  # varible for 'id'
     authors = 'authors' # variable for 'authors'
-    """Returns 5 (maximum) search results"""
     print(fig.renderText("Searching..."))
 
     if not query:
@@ -55,9 +55,9 @@ def search(query, max):
 @main.command()
 @click.argument('id', default = '', metavar = '<Book ID>')
 def add(id):
+    """Adds a Book into your Reading List by inputing <Book ID>"""
     read = 'r' # variable for 'r'
     write = 'w' # variable for 'w'
-    """Adds a Book into your Reading List by inputing <Book ID>"""
     if not id:
         id = click.prompt("Enter a Book ID to add it in to your Reading List: ")
     bookDetails = requests.get(ID_URL.format(id))
@@ -89,8 +89,8 @@ def add(id):
 @main.command()
 @click.argument('sortby', default = '')
 def readinglist(sortby):
-    read = 'r' # variable for 'r'
     """Lists all Book Titles in Reading List"""
+    read = 'r' # variable for 'r'
     if os.path.exists(JSON_LIST):
         jsonFile = open(JSON_LIST, read) # Opens and Reads the JSON File
         data = json.load(jsonFile) # Loads JSON File
