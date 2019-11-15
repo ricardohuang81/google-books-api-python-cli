@@ -20,16 +20,13 @@
 ## Command to search Book Titles
 `python3 books.py search "<Search Term>" <Optional Results Number>`  
   
-<pre>
- Example: `python3 books.py search "Game of Thrones" 4`
-</pre>
+<pre> Example: </pre>`python3 books.py search "Game of Thrones" 4`
 
 ## Command to add Books to your Reading List
 `python3 books.py add "<Book ID>"`  
   
-<pre>
-  Example: `python3 books.py add "QnAG5M8lpm4C"`
-</pre>
+<pre> Example: </pre>`python3 books.py add "QnAG5M8lpm4C"`
+
     
 ## Command to view Reading List of Books
 `python3 books.py readinglist`
